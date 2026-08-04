@@ -1,0 +1,32 @@
+:root {
+  /* background & surface */
+  --bg: #fafafa;
+  --panel: #ffffff;
+  --ink: #1f2430;
+  --muted: #8a8f9c;
+  --line: #ececec;
+
+  /* brand & functional accents */
+  --brand: #7c6ff0;
+  --brand-light: #e3e0ff;
+  --danger: #ef5c5c;
+  --accent-blue: #bcd6ff;
+
+  /* feature palette */
+  --pink: #f9a8d4;
+  --peach: #fcd9b6;
+  --teal: #a7e8dc;
+  --lav: #c7d2fe;
+  --mint: #d5f5c3;
+  --yellow: #fdf1b8;
+  --rose: #f8b4b4;
+  --sky: #b4d4f8;
+
+  --radius: 14px;
+  --shadow: 0 1px 3px rgba(20, 20, 30, 0.06), 0 1px 2px rgba(20, 20, 30, 0.04);
+  --palette: var(--pink), var(--peach), var(--teal), var(--lav), var(--mint), var(--yellow), var(--rose), var(--sky);
+
+  /* top-row calendar panel width cap */
+  --calendar-panel-max: 60%;
+
+}

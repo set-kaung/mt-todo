@@ -1,0 +1,111 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Event {
+  id        String   @id @default(cuid())
+  name      String
+  date      String
+  time      String   @default("")
+  priority  Int      @default(2)
+  color     String   @default("#f9a8d4")
+  createdAt DateTime @default(now())
+
+  @@index([date])
+  @@map("events")
+}
+
+model Goal {
+  id       String @id @default(cuid())
+  month    String
+  position Int
+  text     String @default("")
+
+  @@unique([month, position])
+  @@map("goals")
+}
+
+model Habit {
+  id           String         @id @default(cuid())
+  name         String
+  completions  HabitCompletion[]
+  createdAt    DateTime       @default(now())
+
+  @@map("habits")
+}
+
+model HabitCompletion {
+  id      String @id @default(cuid())
+  habit   Habit  @relation(fields: [habitId], references: [id], onDelete: Cascade)
+  habitId String
+  date    String
+
+  @@unique([habitId, date])
+  @@index([habitId, date])
+  @@map("habit_completions")
+}
+
+model TimetableSlot {
+  id        String   @id @default(cuid())
+  name      String
+  day       String
+  start     String
+  end       String
+  color     String   @default("#c7d2fe")
+  startDate String   @default("")
+  endDate   String   @default("")
+  createdAt DateTime @default(now())
+
+  @@map("timetable_slots")
+}
+
+model WeeklyTask {
+  id     String @id @default(cuid())
+  date   String
+  index  Int
+  text   String @default("")
+  done   Boolean @default(false)
+
+  @@unique([date, index])
+  @@index([date])
+  @@map("weekly_tasks")
+}
+
+model TodoItem {
+  id     String @id @default(cuid())
+  date   String
+  index  Int
+  text   String @default("")
+  done   Boolean @default(false)
+
+  @@unique([date, index])
+  @@index([date])
+  @@map("todo_items")
+}
+
+model Resource {
+  id    String @id @default(cuid())
+  name  String
+  link  String
+
+  @@map("resources")
+}
+
+model FocusSession {
+  id        String   @id @default(cuid())
+  date      String
+  category  String   @default("General")
+  minutes   Int
+  type      String   @default("focus")
+  startTime String   @default("")
+  endTime   String   @default("")
+  createdAt DateTime @default(now())
+
+  @@index([date])
+  @@map("focus_sessions")
+}
