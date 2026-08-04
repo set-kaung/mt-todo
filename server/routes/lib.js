@@ -31,15 +31,6 @@ export async function ensureTodos(userId, date, n = FIXED_TODOS) {
   return prisma.todoItem.findMany({ where: { userId, date }, orderBy: { index: 'asc' } });
 }
 
-export async function ensureDefaultHabits(userId) {
-  const names = ['Exercise', 'Water', 'Reading', 'Language', 'Drawing'];
-  const existing = await prisma.habit.findMany({ where: { userId, name: { in: names } } });
-  const missing = names.filter((n) => !existing.find((h) => h.name === n));
-  for (const name of missing) {
-    await prisma.habit.create({ data: { userId, name } });
-  }
-}
-
 export function weekDatesFromMonday(mondayStr) {
   const start = new Date(mondayStr + 'T00:00:00');
   const out = [];

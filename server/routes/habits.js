@@ -1,11 +1,10 @@
 import { Router } from 'express';
-import { prisma, ensureDefaultHabits } from './lib.js';
+import { prisma } from './lib.js';
 
 const router = Router();
 
 router.get('/', async (req, res) => {
   const userId = req.userId;
-  await ensureDefaultHabits(userId);
   const habits = await prisma.habit.findMany({ where: { userId }, orderBy: { createdAt: 'asc' } });
   const completions = await prisma.habitCompletion.findMany({ where: { userId } });
   const map = {};
@@ -26,6 +25,13 @@ router.put('/:id', async (req, res) => {
     data: { name: (name || '').trim() || 'Habit' },
   });
   res.json(h);
+});
+
+router.delete('/:id', async (req, res) => {
+  await prisma.habit.delete({
+    where: { id: req.params.id, userId: req.userId },
+  });
+  res.json({ ok: true });
 });
 
 router.post('/toggle', async (req, res) => {

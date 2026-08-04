@@ -65,6 +65,7 @@ export const setGoals = (body) => request('/goals', { method: 'PUT', body: JSON.
 export const getHabits = () => request('/habits');
 export const createHabit = (body) => request('/habits', { method: 'POST', body: JSON.stringify(body) });
 export const renameHabit = (id, body) => request(`/habits/${id}`, { method: 'PUT', body: JSON.stringify(body) });
+export const deleteHabit = (id) => request(`/habits/${id}`, { method: 'DELETE' });
 export const toggleHabit = (body) => request('/habits/toggle', { method: 'POST', body: JSON.stringify(body) });
 
 // Timetable
