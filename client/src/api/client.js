@@ -22,9 +22,13 @@ async function request(path, opts = {}) {
     ...opts,
   });
   if (res.status === 401) {
-    clearToken();
-    window.location.reload();
-    return;
+    if (token) {
+      clearToken();
+      window.location.reload();
+      return;
+    }
+    const text = await res.text();
+    throw new Error(`HTTP ${res.status}: ${text}`);
   }
   if (!res.ok) {
     const text = await res.text();

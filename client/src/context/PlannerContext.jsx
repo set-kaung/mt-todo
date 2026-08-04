@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import * as api from '../api/client.js';
+import { getToken } from '../api/client.js';
 import { toISODate, getMonday, monthKey } from '../utils/dates.js';
 
 const PlannerContext = createContext(null);
@@ -30,6 +31,7 @@ export function PlannerProvider({ children }) {
   }, []);
 
   useEffect(() => {
+    if (!getToken()) return;
     refreshFocus();
     refreshTimetable();
   }, [refreshFocus, refreshTimetable]);
