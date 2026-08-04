@@ -20,9 +20,9 @@ export default function Header({ onLogout }) {
         <span className="today-month-year">{MONTH_NAMES[today.getMonth()]} {today.getFullYear()}</span>
       </div>
       <div className="week-nav">
-        <button className="ghost-btn" onClick={() => shift(-1)}>‹ Week</button>
+        <button className="ghost-btn" onClick={() => shift(-1)}>Before</button>
         <span>{weekLabel}</span>
-        <button className="ghost-btn" onClick={() => shift(1)}>Week ›</button>
+        <button className="ghost-btn" onClick={() => shift(1)}>Next</button>
         {onLogout && <button className="ghost-btn" onClick={onLogout}>Logout</button>}
       </div>
     </header>

@@ -15,6 +15,18 @@ export default function AddTimetableForm() {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
 
+  const handleStartDate = (value) => {
+    setStartDate(value);
+    if (endDate && value && endDate < value) {
+      setEndDate(value);
+    }
+  };
+
+  const handleEndDate = (value) => {
+    if (value && startDate && value < startDate) return;
+    setEndDate(value);
+  };
+
   const toggleDay = (d) => {
     setDays((prev) => (prev.includes(d) ? prev.filter((x) => x !== d) : [...prev, d]));
   };
@@ -47,8 +59,8 @@ export default function AddTimetableForm() {
         <label>Start<input type="time" value={start} onChange={(e) => setStart(e.target.value)} required /></label>
         <label>End<input type="time" value={end} onChange={(e) => setEnd(e.target.value)} required /></label>
         <label>Color<ColorPicker value={color} onChange={setColor} /></label>
-        <label>Start Date<input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} /></label>
-        <label>End Date<input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} /></label>
+        <label>Start Date<input type="date" value={startDate} onChange={(e) => handleStartDate(e.target.value)} /></label>
+        <label>End Date<input type="date" value={endDate} min={startDate || undefined} onChange={(e) => handleEndDate(e.target.value)} /></label>
         <button className="primary-btn" type="submit">ADD</button>
       </form>
     </div>
