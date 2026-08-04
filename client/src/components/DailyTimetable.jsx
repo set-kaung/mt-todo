@@ -40,14 +40,14 @@ export default function DailyTimetable() {
       <div className="daily-timetable">
         {HOURS.map((h) => {
           const label = h === 12 ? '12 PM' : h > 12 ? `${h - 12} PM` : `${h} AM`;
-          const hourFocus = allFocus.filter((s) => s.date === selectedDate && s.type === 'focus' && s.startTime && parseInt(s.startTime.split(':')[0], 10) === h);
+          const hourFocus = allFocus.filter((s) => s.date === selectedDate && s.type === 'focus' && s.start_time && parseInt(s.start_time.split(':')[0], 10) === h);
           return (
             <div className="dt-hour-row" key={h}>
               <div className="dt-hour-label">{label}</div>
               <div className="dt-hour-content">
                 {hourFocus.map((s) => (
                   <div className="dt-entry" key={s.id} style={{ background: colorFor(s.category) }}>
-                    <span>{s.category} ({s.minutes} mins)</span><span>{s.startTime}</span>
+                    <span>{s.category} ({s.minutes} mins)</span><span>{s.start_time}</span>
                   </div>
                 ))}
               </div>
