@@ -14,6 +14,7 @@ export default function AddTimetableForm() {
   const [color, setColor] = useState('#c7d2fe');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [dayError, setDayError] = useState('');
 
   const handleStartDate = (value) => {
     setStartDate(value);
@@ -28,12 +29,20 @@ export default function AddTimetableForm() {
   };
 
   const toggleDay = (d) => {
-    setDays((prev) => (prev.includes(d) ? prev.filter((x) => x !== d) : [...prev, d]));
+    setDays((prev) => {
+      const next = prev.includes(d) ? prev.filter((x) => x !== d) : [...prev, d];
+      if (next.length > 0) setDayError('');
+      return next;
+    });
   };
 
   const submit = async (e) => {
     e.preventDefault();
-    if (days.length === 0) return;
+    if (days.length === 0) {
+      setDayError('Please select at least one day.');
+      return;
+    }
+    setDayError('');
     for (const day of days) {
       await api.createTimetable({ name, day, start, end, color, startDate, endDate });
     }
@@ -55,6 +64,7 @@ export default function AddTimetableForm() {
               </label>
             ))}
           </div>
+          {dayError && <span className="field-error">{dayError}</span>}
         </label>
         <label>Start<input type="time" value={start} onChange={(e) => setStart(e.target.value)} required /></label>
         <label>End<input type="time" value={end} onChange={(e) => setEnd(e.target.value)} required /></label>

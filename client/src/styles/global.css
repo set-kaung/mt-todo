@@ -380,6 +380,12 @@ input, select { font-family: inherit; font-size: 13px; }
   font-size: 12px;
   text-align: left;
 }
+.field-error {
+  color: var(--danger);
+  font-size: 12px;
+  display: block;
+  margin-top: 4px;
+}
 
 /* ---------- Modal / Popup ---------- */
 .modal, .popup {

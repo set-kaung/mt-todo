@@ -10,10 +10,14 @@ router.get('/', async (req, res) => {
 
 router.post('/', async (req, res) => {
   const { name, day, start, end, color, startDate, endDate } = req.body;
+  if (!name || !name.trim()) return res.status(400).json({ error: 'Name is required.' });
+  if (!day) return res.status(400).json({ error: 'Day is required.' });
+  if (!start) return res.status(400).json({ error: 'Start time is required.' });
+  if (!end) return res.status(400).json({ error: 'End time is required.' });
   const slot = await prisma.timetableSlot.create({
     data: {
       userId: req.userId,
-      name: name || 'Untitled',
+      name: name.trim(),
       day,
       start,
       end,
