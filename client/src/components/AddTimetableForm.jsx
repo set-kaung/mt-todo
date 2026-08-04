@@ -59,7 +59,7 @@ export default function AddTimetableForm() {
         <label>Start<input type="time" value={start} onChange={(e) => setStart(e.target.value)} required /></label>
         <label>End<input type="time" value={end} onChange={(e) => setEnd(e.target.value)} required /></label>
         <label>Color<ColorPicker value={color} onChange={setColor} /></label>
-        <label>Start Date<input type="date" value={startDate} onChange={(e) => handleStartDate(e.target.value)} /></label>
+        <label>Start Date<input type="date" value={startDate} max={endDate || undefined} onChange={(e) => handleStartDate(e.target.value)} /></label>
         <label>End Date<input type="date" value={endDate} min={startDate || undefined} onChange={(e) => handleEndDate(e.target.value)} /></label>
         <button className="primary-btn" type="submit">ADD</button>
       </form>
