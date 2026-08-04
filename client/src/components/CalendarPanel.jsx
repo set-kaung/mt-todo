@@ -1,24 +1,16 @@
 import { useEffect, useState } from 'react';
 import { usePlanner } from '../context/PlannerContext.jsx';
 import * as api from '../api/client.js';
-import { toISODate, addDays, monthKey, MONTH_NAMES, DAY_NAMES } from '../utils/dates.js';
+import { toISODate, addDays, MONTH_NAMES, DAY_NAMES } from '../utils/dates.js';
 import Modal from './Modal.jsx';
 import ColorPicker from './ColorPicker.jsx';
 import ConfirmPopup from './ConfirmPopup.jsx';
 
 export default function CalendarPanel() {
-  const { today, calMonth, setCalMonth } = usePlanner();
-  const [events, setEvents] = useState([]);
+  const { today, calMonth, setCalMonth, events, refreshEvents } = usePlanner();
   const [modalOpen, setModalOpen] = useState(false);
   const [prefillDate, setPrefillDate] = useState(toISODate(today));
   const [deleteId, setDeleteId] = useState(null);
-
-  const load = async () => {
-    const data = await api.getEvents(monthKey(calMonth));
-    setEvents(data);
-  };
-
-  useEffect(() => { load(); }, [calMonth]);
 
   const firstOfMonth = new Date(calMonth.getFullYear(), calMonth.getMonth(), 1);
   const gridStart = addDays(firstOfMonth, -firstOfMonth.getDay());
@@ -37,7 +29,7 @@ export default function CalendarPanel() {
   const confirmDelete = async () => {
     await api.deleteEvent(deleteId);
     setDeleteId(null);
-    load();
+    refreshEvents();
   };
 
   const openModal = (date) => {
@@ -76,7 +68,7 @@ export default function CalendarPanel() {
           );
         })}
       </div>
-      <EventModal open={modalOpen} onClose={() => { setModalOpen(false); load(); }} prefillDate={prefillDate} />
+      <EventModal open={modalOpen} onClose={() => { setModalOpen(false); refreshEvents(); }} prefillDate={prefillDate} />
       <ConfirmPopup open={!!deleteId} text="Delete this event?" onCancel={() => setDeleteId(null)} onConfirm={confirmDelete} />
     </div>
   );

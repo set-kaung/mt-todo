@@ -19,6 +19,12 @@ export function PlannerProvider({ children }) {
   const [selectedDate, setSelectedDate] = useState(toISODate(new Date()));
   const [allFocus, setAllFocus] = useState([]);
   const [timetable, setTimetable] = useState([]);
+  const [events, setEvents] = useState([]);
+
+  const refreshEvents = useCallback(async () => {
+    const data = await api.getEvents(monthKey(calMonth));
+    setEvents(data);
+  }, [calMonth]);
 
   const refreshFocus = useCallback(async () => {
     const data = await api.getFocus();
@@ -34,7 +40,8 @@ export function PlannerProvider({ children }) {
     if (!getToken()) return;
     refreshFocus();
     refreshTimetable();
-  }, [refreshFocus, refreshTimetable]);
+    refreshEvents();
+  }, [refreshFocus, refreshTimetable, refreshEvents]);
 
   const value = {
     today,
@@ -50,6 +57,8 @@ export function PlannerProvider({ children }) {
     refreshFocus,
     timetable,
     refreshTimetable,
+    events,
+    refreshEvents,
   };
 
   return <PlannerContext.Provider value={value}>{children}</PlannerContext.Provider>;

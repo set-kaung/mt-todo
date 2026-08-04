@@ -1,22 +1,12 @@
-import { useEffect, useState } from 'react';
 import { usePlanner } from '../context/PlannerContext.jsx';
 import * as api from '../api/client.js';
-import { monthKey } from '../utils/dates.js';
 
 export default function SchedulePanel() {
-  const { calMonth } = usePlanner();
-  const [events, setEvents] = useState([]);
-
-  const load = async () => {
-    const data = await api.getEvents(monthKey(calMonth));
-    setEvents(data);
-  };
-
-  useEffect(() => { load(); }, [calMonth]);
+  const { events, refreshEvents } = usePlanner();
 
   const remove = async (id) => {
     await api.deleteEvent(id);
-    load();
+    refreshEvents();
   };
 
   return (
