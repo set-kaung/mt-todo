@@ -3,7 +3,6 @@ import { useState } from 'react';
 const SWATCHES = [
   '#f9a8d4', '#fcd9b6', '#a7e8dc', '#c7d2fe',
   '#d5f5c3', '#fdf1b8', '#f8b4b4', '#b4d4f8',
-  '#7c6ff0', '#ef5c5c', '#bcd6ff', '#1f2430',
 ];
 
 const HEX_RE = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
