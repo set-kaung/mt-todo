@@ -1,16 +1,52 @@
 const API_PREFIX = '/api';
+const TOKEN_KEY = 'planner_token';
+
+export function getToken() {
+  return localStorage.getItem(TOKEN_KEY);
+}
+
+export function setToken(token) {
+  localStorage.setItem(TOKEN_KEY, token);
+}
+
+export function clearToken() {
+  localStorage.removeItem(TOKEN_KEY);
+}
 
 async function request(path, opts = {}) {
+  const token = getToken();
+  const headers = { 'Content-Type': 'application/json', ...opts.headers };
+  if (token) headers.Authorization = `Bearer ${token}`;
   const res = await fetch(`${API_PREFIX}${path}`, {
-    headers: { 'Content-Type': 'application/json', ...opts.headers },
+    headers,
     ...opts,
   });
+  if (res.status === 401) {
+    clearToken();
+    window.location.reload();
+    return;
+  }
   if (!res.ok) {
     const text = await res.text();
     throw new Error(`HTTP ${res.status}: ${text}`);
   }
   return res.json();
 }
+
+// Auth
+export const login = (body) => fetch(`${API_PREFIX}/auth/login`, {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(body),
+}).then(async (res) => {
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`HTTP ${res.status}: ${text}`);
+  }
+  return res.json();
+});
+
+export const getMe = () => request('/auth/me');
 
 // Events
 export const getEvents = (month) => request(`/events?month=${month}`);

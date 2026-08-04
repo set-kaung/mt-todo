@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { usePlanner } from '../context/PlannerContext.jsx';
 import { toISODate, addDays, MONTH_NAMES, getMonday } from '../utils/dates.js';
 
-export default function Header() {
+export default function Header({ onLogout }) {
   const { today, weekMonday, setWeekMonday } = usePlanner();
 
   const shift = (n) => {
@@ -23,6 +23,7 @@ export default function Header() {
         <button className="ghost-btn" onClick={() => shift(-1)}>‹ Week</button>
         <span>{weekLabel}</span>
         <button className="ghost-btn" onClick={() => shift(1)}>Week ›</button>
+        {onLogout && <button className="ghost-btn" onClick={onLogout}>Logout</button>}
       </div>
     </header>
   );

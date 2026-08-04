@@ -1,4 +1,7 @@
+import { useState, useEffect } from 'react';
+import { getToken, clearToken } from './api/client.js';
 import Header from './components/Header.jsx';
+import LoginPage from './components/LoginPage.jsx';
 import SchedulePanel from './components/SchedulePanel.jsx';
 import CalendarPanel from './components/CalendarPanel.jsx';
 import GoalsPanel from './components/GoalsPanel.jsx';
@@ -15,9 +18,31 @@ import TodoList from './components/TodoList.jsx';
 import DailyFocusKPI, { WeeklyFocusKPI } from './components/DailyFocusKPI.jsx';
 
 export default function App() {
+  const [loggedIn, setLoggedIn] = useState(() => Boolean(getToken()));
+
+  useEffect(() => {
+    const onStorage = (e) => {
+      if (e.key === 'planner_token' && !e.newValue) {
+        setLoggedIn(false);
+      }
+    };
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
+  }, []);
+
+  const handleLogin = () => setLoggedIn(true);
+  const handleLogout = () => {
+    clearToken();
+    setLoggedIn(false);
+  };
+
+  if (!loggedIn) {
+    return <LoginPage onLogin={handleLogin} />;
+  }
+
   return (
     <div className="app">
-      <Header />
+      <Header onLogout={handleLogout} />
       <section className="row row1">
         <SchedulePanel />
         <CalendarPanel />
