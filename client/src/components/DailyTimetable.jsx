@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import { usePlanner } from '../context/PlannerContext.jsx';
 import { toISODate, addDays, parseISO, MONTH_NAMES, DAY_CODES, colorFor } from '../utils/dates.js';
 
-const HOURS = Array.from({ length: 18 }, (_, i) => i + 6);
+const HOURS = Array.from({ length: 24 }, (_, i) => i);
 
 export default function DailyTimetable() {
   const { today, selectedDate, setSelectedDate, weekMonday, allFocus } = usePlanner();
@@ -39,7 +39,7 @@ export default function DailyTimetable() {
       </div>
       <div className="daily-timetable">
         {HOURS.map((h) => {
-          const label = h === 12 ? '12 PM' : h > 12 ? `${h - 12} PM` : `${h} AM`;
+          const label = h === 0 ? '12 AM' : h === 12 ? '12 PM' : h > 12 ? `${h - 12} PM` : `${h} AM`;
           const hourFocus = allFocus.filter((s) => s.date === selectedDate && s.type === 'focus' && s.start_time && parseInt(s.start_time.split(':')[0], 10) === h);
           return (
             <div className="dt-hour-row" key={h}>
