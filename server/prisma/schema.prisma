@@ -3,84 +3,82 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
   directUrl = env("DIRECT_DATABASE_URL")
 }
 
 model User {
-  id            String          @id @default(cuid())
-  email         String          @unique
-  passwordHash  String
-  createdAt     DateTime        @default(now())
-  events        Event[]
-  goals         Goal[]
-  habits        Habit[]
-  habitCompletions HabitCompletion[]
-  timetableSlots TimetableSlot[]
-  weeklyTasks  WeeklyTask[]
-  todoItems    TodoItem[]
-  resources    Resource[]
-  focusSessions FocusSession[]
+  id                String            @id @default(cuid())
+  email             String            @unique
+  password_hash     String
+  created_at        DateTime          @default(now())
+  events            Event[]
+  focus_sessions    FocusSession[]
+  goals             Goal[]
+  habit_completions HabitCompletion[]
+  habits            Habit[]
+  resources         Resource[]
+  timetable_slots   TimetableSlot[]
+  todo_items        TodoItem[]
+  weekly_tasks      WeeklyTask[]
 
   @@map("users")
 }
 
 model Event {
-  id        String   @id @default(cuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  name      String
-  date      String
-  time      String   @default("")
-  priority  Int      @default(2)
-  color     String   @default("#f9a8d4")
-  createdAt DateTime @default(now())
+  id         String   @id @default(cuid())
+  name       String
+  date       String
+  time       String   @default("")
+  priority   Int      @default(2)
+  color      String   @default("#f9a8d4")
+  created_at DateTime @default(now())
+  user_id    String
+  users      User     @relation(fields: [user_id], references: [id], onDelete: Cascade, map: "events_userId_fkey")
 
-  @@index([userId, date])
+  @@index([user_id, date], map: "events_userId_date_idx")
   @@map("events")
 }
 
 model Goal {
   id       String @id @default(cuid())
-  userId   String
-  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   month    String
   position Int
   text     String @default("")
+  user_id  String
+  users    User   @relation(fields: [user_id], references: [id], onDelete: Cascade, map: "goals_userId_fkey")
 
-  @@unique([userId, month, position])
+  @@unique([user_id, month, position], map: "goals_userId_month_position_key")
   @@map("goals")
 }
 
 model Habit {
-  id           String         @id @default(cuid())
-  userId       String
-  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  name         String
-  completions  HabitCompletion[]
-  createdAt    DateTime       @default(now())
+  id                String            @id @default(cuid())
+  name              String
+  created_at        DateTime          @default(now())
+  user_id           String
+  habit_completions HabitCompletion[]
+  users             User              @relation(fields: [user_id], references: [id], onDelete: Cascade, map: "habits_userId_fkey")
 
   @@map("habits")
 }
 
 model HabitCompletion {
-  id      String @id @default(cuid())
-  userId  String
-  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  habit   Habit  @relation(fields: [habitId], references: [id], onDelete: Cascade)
-  habitId String
-  date    String
+  id       String @id @default(cuid())
+  habit_id String
+  date     String
+  user_id  String
+  habits   Habit  @relation(fields: [habit_id], references: [id], onDelete: Cascade, map: "habit_completions_habitId_fkey")
+  users    User   @relation(fields: [user_id], references: [id], onDelete: Cascade, map: "habit_completions_userId_fkey")
 
-  @@unique([userId, habitId, date])
-  @@index([userId, habitId, date])
+  @@unique([user_id, habit_id, date], map: "habit_completions_userId_habitId_date_key")
+  @@index([user_id, habit_id, date], map: "habit_completions_userId_habitId_date_idx")
   @@map("habit_completions")
 }
 
 model TimetableSlot {
   id        String   @id @default(cuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   name      String
   day       String
   start     String
@@ -89,60 +87,62 @@ model TimetableSlot {
   startDate String   @default("")
   endDate   String   @default("")
   createdAt DateTime @default(now())
+  user_id   String
+  users     User     @relation(fields: [user_id], references: [id], onDelete: Cascade, map: "timetable_slots_userId_fkey")
 
   @@map("timetable_slots")
 }
 
 model WeeklyTask {
-  id     String @id @default(cuid())
-  userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  date   String
-  index  Int
-  text   String @default("")
-  done   Boolean @default(false)
+  id      String  @id @default(cuid())
+  date    String
+  index   Int
+  text    String  @default("")
+  done    Boolean @default(false)
+  user_id String
+  users   User    @relation(fields: [user_id], references: [id], onDelete: Cascade, map: "weekly_tasks_userId_fkey")
 
-  @@unique([userId, date, index])
-  @@index([userId, date])
+  @@unique([user_id, date, index], map: "weekly_tasks_userId_date_index_key")
+  @@index([user_id, date], map: "weekly_tasks_userId_date_idx")
   @@map("weekly_tasks")
 }
 
 model TodoItem {
-  id     String @id @default(cuid())
-  userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  date   String
-  index  Int
-  text   String @default("")
-  done   Boolean @default(false)
+  id      String  @id @default(cuid())
+  date    String
+  index   Int
+  text    String  @default("")
+  done    Boolean @default(false)
+  user_id String
+  users   User    @relation(fields: [user_id], references: [id], onDelete: Cascade, map: "todo_items_userId_fkey")
 
-  @@unique([userId, date, index])
-  @@index([userId, date])
+  @@unique([user_id, date, index], map: "todo_items_userId_date_index_key")
+  @@index([user_id, date], map: "todo_items_userId_date_idx")
   @@map("todo_items")
 }
 
 model Resource {
-  id     String @id @default(cuid())
-  userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  name   String
-  link   String
+  id      String @id @default(cuid())
+  name    String
+  link    String
+  user_id String
+  users   User   @relation(fields: [user_id], references: [id], onDelete: Cascade, map: "resources_userId_fkey")
 
   @@map("resources")
 }
 
 model FocusSession {
-  id        String   @id @default(cuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  date      String
-  category  String   @default("General")
-  minutes   Int
-  type      String   @default("focus")
-  startTime String   @default("")
-  endTime   String   @default("")
-  createdAt DateTime @default(now())
+  id         String   @id @default(cuid())
+  date       String
+  category   String   @default("General")
+  minutes    Int
+  type       String   @default("focus")
+  start_time String   @default("")
+  end_time   String   @default("")
+  created_at DateTime @default(now())
+  user_id    String
+  users      User     @relation(fields: [user_id], references: [id], onDelete: Cascade, map: "focus_sessions_userId_fkey")
 
-  @@index([userId, date])
+  @@index([user_id, date], map: "focus_sessions_userId_date_idx")
   @@map("focus_sessions")
 }

@@ -4,7 +4,7 @@ import { prisma } from './lib.js';
 const router = Router();
 
 router.get('/', async (req, res) => {
-  const slots = await prisma.timetableSlot.findMany({ where: { userId: req.userId }, orderBy: { createdAt: 'asc' } });
+  const slots = await prisma.timetableSlot.findMany({ where: { user_id: req.userId }, orderBy: { createdAt: 'asc' } });
   res.json(slots);
 });
 
@@ -16,7 +16,7 @@ router.post('/', async (req, res) => {
   if (!end) return res.status(400).json({ error: 'End time is required.' });
   const slot = await prisma.timetableSlot.create({
     data: {
-      userId: req.userId,
+      user_id: req.userId,
       name: name.trim(),
       day,
       start,
@@ -30,7 +30,7 @@ router.post('/', async (req, res) => {
 });
 
 router.delete('/:id', async (req, res) => {
-  await prisma.timetableSlot.delete({ where: { id: req.params.id, userId: req.userId } });
+  await prisma.timetableSlot.delete({ where: { id: req.params.id, user_id: req.userId } });
   res.json({ ok: true });
 });
 

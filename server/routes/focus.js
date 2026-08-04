@@ -4,11 +4,11 @@ import { prisma } from './lib.js';
 const router = Router();
 
 router.get('/', async (req, res) => {
-  const userId = req.userId;
+  const user_id = req.userId;
   const date = req.query.date;
-  let where = { userId };
-  if (date) where = { userId, date };
-  const sessions = await prisma.focusSession.findMany({ where, orderBy: { createdAt: 'asc' } });
+  let where = { user_id };
+  if (date) where = { user_id, date };
+  const sessions = await prisma.focusSession.findMany({ where, orderBy: { created_at: 'asc' } });
   const totalMinutes = sessions.filter((s) => s.type === 'focus').reduce((a, s) => a + s.minutes, 0);
   const byCategory = {};
   sessions.filter((s) => s.type === 'focus').forEach((s) => {
@@ -21,20 +21,20 @@ router.post('/', async (req, res) => {
   const { date, category, minutes, type, startTime, endTime } = req.body;
   const s = await prisma.focusSession.create({
     data: {
-      userId: req.userId,
+      user_id: req.userId,
       date,
       category: category || 'General',
       minutes: Number(minutes) || 0,
       type: type || 'focus',
-      startTime: startTime || '',
-      endTime: endTime || '',
+      start_time: startTime || '',
+      end_time: endTime || '',
     },
   });
   res.json(s);
 });
 
 router.delete('/:id', async (req, res) => {
-  await prisma.focusSession.delete({ where: { id: req.params.id, userId: req.userId } });
+  await prisma.focusSession.delete({ where: { id: req.params.id, user_id: req.userId } });
   res.json({ ok: true });
 });
 

@@ -31,7 +31,7 @@ router.post("/signup", requireSignupKey, async (req, res) => {
 
   const passwordHash = await bcrypt.hash(password, 10);
   const user = await prisma.user.create({
-    data: { email, passwordHash },
+    data: { email, password_hash: passwordHash },
   });
 
   const token = generateToken(user.id);
@@ -50,7 +50,7 @@ router.post("/login", async (req, res) => {
     return res.status(401).json({ error: "Invalid credentials" });
   }
 
-  const valid = await bcrypt.compare(password, user.passwordHash);
+  const valid = await bcrypt.compare(password, user.password_hash);
   if (!valid) {
     return res.status(401).json({ error: "Invalid credentials" });
   }
@@ -62,7 +62,7 @@ router.post("/login", async (req, res) => {
 router.get("/me", authenticate, async (req, res) => {
   const user = await prisma.user.findUnique({
     where: { id: req.userId },
-    select: { id: true, email: true, createdAt: true },
+    select: { id: true, email: true, created_at: true },
   });
   if (!user) {
     return res.status(404).json({ error: "User not found" });
@@ -78,7 +78,7 @@ router.put("/email", authenticate, async (req, res) => {
   }
 
   const user = await prisma.user.findUnique({ where: { id: req.userId } });
-  const valid = await bcrypt.compare(password, user.passwordHash);
+  const valid = await bcrypt.compare(password, user.password_hash);
   if (!valid) {
     return res.status(401).json({ error: "Invalid password" });
   }
@@ -91,7 +91,7 @@ router.put("/email", authenticate, async (req, res) => {
   const updated = await prisma.user.update({
     where: { id: req.userId },
     data: { email },
-    select: { id: true, email: true, createdAt: true },
+    select: { id: true, email: true, created_at: true },
   });
 
   res.json(updated);
@@ -105,7 +105,7 @@ router.put("/password", authenticate, async (req, res) => {
   }
 
   const user = await prisma.user.findUnique({ where: { id: req.userId } });
-  const valid = await bcrypt.compare(currentPassword, user.passwordHash);
+  const valid = await bcrypt.compare(currentPassword, user.password_hash);
   if (!valid) {
     return res.status(401).json({ error: "Invalid current password" });
   }
@@ -113,7 +113,7 @@ router.put("/password", authenticate, async (req, res) => {
   const passwordHash = await bcrypt.hash(newPassword, 10);
   await prisma.user.update({
     where: { id: req.userId },
-    data: { passwordHash },
+    data: { password_hash: passwordHash },
   });
 
   res.json({ ok: true });

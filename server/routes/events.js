@@ -4,10 +4,10 @@ import { prisma } from './lib.js';
 const router = Router();
 
 router.get('/', async (req, res) => {
-  const userId = req.userId;
+  const user_id = req.userId;
   const month = req.query.month;
-  let where = { userId };
-  if (month) where = { userId, date: { startsWith: month } };
+  let where = { user_id };
+  if (month) where = { user_id, date: { startsWith: month } };
   const events = await prisma.event.findMany({ where, orderBy: [{ priority: 'asc' }, { date: 'asc' }] });
   res.json(events);
 });
@@ -16,7 +16,7 @@ router.post('/', async (req, res) => {
   const { name, date, time, priority, color } = req.body;
   const ev = await prisma.event.create({
     data: {
-      userId: req.userId,
+      user_id: req.userId,
       name: name || 'Untitled',
       date,
       time: time || '',
@@ -28,7 +28,7 @@ router.post('/', async (req, res) => {
 });
 
 router.delete('/:id', async (req, res) => {
-  await prisma.event.delete({ where: { id: req.params.id, userId: req.userId } });
+  await prisma.event.delete({ where: { id: req.params.id, user_id: req.userId } });
   res.json({ ok: true });
 });
 
