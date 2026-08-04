@@ -78,17 +78,17 @@ model HabitCompletion {
 }
 
 model TimetableSlot {
-  id        String   @id @default(cuid())
-  name      String
-  day       String
-  start     String
-  end       String
-  color     String   @default("#c7d2fe")
-  startDate String   @default("")
-  endDate   String   @default("")
-  createdAt DateTime @default(now())
-  user_id   String
-  users     User     @relation(fields: [user_id], references: [id], onDelete: Cascade, map: "timetable_slots_userId_fkey")
+  id         String   @id @default(cuid())
+  name       String
+  day        String
+  start      String
+  end        String
+  color      String   @default("#c7d2fe")
+  start_date String   @default("")
+  end_date   String   @default("")
+  created_at DateTime @default(now())
+  user_id    String
+  users      User     @relation(fields: [user_id], references: [id], onDelete: Cascade, map: "timetable_slots_userId_fkey")
 
   @@map("timetable_slots")
 }

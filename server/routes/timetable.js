@@ -4,7 +4,7 @@ import { prisma } from './lib.js';
 const router = Router();
 
 router.get('/', async (req, res) => {
-  const slots = await prisma.timetableSlot.findMany({ where: { user_id: req.userId }, orderBy: { createdAt: 'asc' } });
+  const slots = await prisma.timetableSlot.findMany({ where: { user_id: req.userId }, orderBy: { created_at: 'asc' } });
   res.json(slots);
 });
 
@@ -22,8 +22,8 @@ router.post('/', async (req, res) => {
       start,
       end,
       color: color || '#c7d2fe',
-      startDate: startDate || '',
-      endDate: endDate || '',
+      start_date: startDate || '',
+      end_date: endDate || '',
     },
   });
   res.json(slot);

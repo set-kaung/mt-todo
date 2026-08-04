@@ -44,5 +44,5 @@ app.get("*", (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Planner server running at http://192.168.1.37:${PORT}`);
+  console.log(`Planner server running at ${PORT}`);
 });
