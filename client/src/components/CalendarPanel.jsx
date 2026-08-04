@@ -4,12 +4,14 @@ import * as api from '../api/client.js';
 import { toISODate, addDays, monthKey, MONTH_NAMES, DAY_NAMES } from '../utils/dates.js';
 import Modal from './Modal.jsx';
 import ColorPicker from './ColorPicker.jsx';
+import ConfirmPopup from './ConfirmPopup.jsx';
 
 export default function CalendarPanel() {
   const { today, calMonth, setCalMonth } = usePlanner();
   const [events, setEvents] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [prefillDate, setPrefillDate] = useState(toISODate(today));
+  const [deleteId, setDeleteId] = useState(null);
 
   const load = async () => {
     const data = await api.getEvents(monthKey(calMonth));
@@ -28,8 +30,13 @@ export default function CalendarPanel() {
     setCalMonth(new Date(calMonth.getFullYear(), calMonth.getMonth() + n, 1));
   };
 
-  const remove = async (id) => {
-    await api.deleteEvent(id);
+  const remove = (id) => {
+    setDeleteId(id);
+  };
+
+  const confirmDelete = async () => {
+    await api.deleteEvent(deleteId);
+    setDeleteId(null);
     load();
   };
 
@@ -70,6 +77,7 @@ export default function CalendarPanel() {
         })}
       </div>
       <EventModal open={modalOpen} onClose={() => { setModalOpen(false); load(); }} prefillDate={prefillDate} />
+      <ConfirmPopup open={!!deleteId} text="Delete this event?" onCancel={() => setDeleteId(null)} onConfirm={confirmDelete} />
     </div>
   );
 }
