@@ -214,14 +214,15 @@ input, select { font-family: inherit; font-size: 13px; }
 }
 .tt-col-header { font-size: 10px; text-align: center; color: var(--muted); font-weight: 700; margin-bottom: 4px; }
 .tt-day-col { display: flex; flex-direction: column; gap: 4px; }
+
 .tt-slot {
   border-radius: 6px;
   padding: 5px 6px;
-  font-size: 9.5px;
+  font-size: 0.75rem;
   cursor: pointer;
   line-height: 1.25;
 }
-.tt-slot .tt-time { font-weight: 700; display: block; font-size: 9px; }
+.tt-slot .tt-time { font-weight: 700; display: block}
 .tt-empty { min-height: 6px; }
 
 .stacked-form { display: flex; flex-direction: column; gap: 8px; margin-bottom: 6px; }
