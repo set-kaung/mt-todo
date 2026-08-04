@@ -7,8 +7,28 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id            String          @id @default(cuid())
+  email         String          @unique
+  passwordHash  String
+  createdAt     DateTime        @default(now())
+  events        Event[]
+  goals         Goal[]
+  habits        Habit[]
+  habitCompletions HabitCompletion[]
+  timetableSlots TimetableSlot[]
+  weeklyTasks  WeeklyTask[]
+  todoItems    TodoItem[]
+  resources    Resource[]
+  focusSessions FocusSession[]
+
+  @@map("users")
+}
+
 model Event {
   id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   name      String
   date      String
   time      String   @default("")
@@ -16,22 +36,26 @@ model Event {
   color     String   @default("#f9a8d4")
   createdAt DateTime @default(now())
 
-  @@index([date])
+  @@index([userId, date])
   @@map("events")
 }
 
 model Goal {
   id       String @id @default(cuid())
+  userId   String
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   month    String
   position Int
   text     String @default("")
 
-  @@unique([month, position])
+  @@unique([userId, month, position])
   @@map("goals")
 }
 
 model Habit {
   id           String         @id @default(cuid())
+  userId       String
+  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   name         String
   completions  HabitCompletion[]
   createdAt    DateTime       @default(now())
@@ -41,17 +65,21 @@ model Habit {
 
 model HabitCompletion {
   id      String @id @default(cuid())
+  userId  String
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   habit   Habit  @relation(fields: [habitId], references: [id], onDelete: Cascade)
   habitId String
   date    String
 
-  @@unique([habitId, date])
-  @@index([habitId, date])
+  @@unique([userId, habitId, date])
+  @@index([userId, habitId, date])
   @@map("habit_completions")
 }
 
 model TimetableSlot {
   id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   name      String
   day       String
   start     String
@@ -66,38 +94,46 @@ model TimetableSlot {
 
 model WeeklyTask {
   id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   date   String
   index  Int
   text   String @default("")
   done   Boolean @default(false)
 
-  @@unique([date, index])
-  @@index([date])
+  @@unique([userId, date, index])
+  @@index([userId, date])
   @@map("weekly_tasks")
 }
 
 model TodoItem {
   id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   date   String
   index  Int
   text   String @default("")
   done   Boolean @default(false)
 
-  @@unique([date, index])
-  @@index([date])
+  @@unique([userId, date, index])
+  @@index([userId, date])
   @@map("todo_items")
 }
 
 model Resource {
-  id    String @id @default(cuid())
-  name  String
-  link  String
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name   String
+  link   String
 
   @@map("resources")
 }
 
 model FocusSession {
   id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   date      String
   category  String   @default("General")
   minutes   Int
@@ -106,6 +142,6 @@ model FocusSession {
   endTime   String   @default("")
   createdAt DateTime @default(now())
 
-  @@index([date])
+  @@index([userId, date])
   @@map("focus_sessions")
 }

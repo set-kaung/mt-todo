@@ -4,6 +4,8 @@ import path from "path";
 import { fileURLToPath } from "url";
 import cors from "cors";
 
+import { authenticate } from "./routes/authMiddleware.js";
+import authRouter from "./routes/auth.js";
 import eventsRouter from "./routes/events.js";
 import goalsRouter from "./routes/goals.js";
 import habitsRouter from "./routes/habits.js";
@@ -25,14 +27,15 @@ app.get("/health", (req, res) => {
   res.status(200).json({ status: "ok" });
 });
 
-app.use("/api/events", eventsRouter);
-app.use("/api/goals", goalsRouter);
-app.use("/api/habits", habitsRouter);
-app.use("/api/timetable", timetableRouter);
-app.use("/api/weeklytasks", weeklyTasksRouter);
-app.use("/api/resources", resourcesRouter);
-app.use("/api/todos", todosRouter);
-app.use("/api/focus", focusRouter);
+app.use("/api/auth", authRouter);
+app.use("/api/events", authenticate, eventsRouter);
+app.use("/api/goals", authenticate, goalsRouter);
+app.use("/api/habits", authenticate, habitsRouter);
+app.use("/api/timetable", authenticate, timetableRouter);
+app.use("/api/weeklytasks", authenticate, weeklyTasksRouter);
+app.use("/api/resources", authenticate, resourcesRouter);
+app.use("/api/todos", authenticate, todosRouter);
+app.use("/api/focus", authenticate, focusRouter);
 
 const distPath = path.join(__dirname, "../client/dist");
 app.use(express.static(distPath));
