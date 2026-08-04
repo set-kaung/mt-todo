@@ -89,6 +89,6 @@ export const updateTodo = (body) => request('/todos', { method: 'POST', body: JS
 export const toggleTodo = (body) => request('/todos/toggle', { method: 'POST', body: JSON.stringify(body) });
 
 // Focus
-export const getFocus = (date) => request(`/focus?date=${date}`);
+export const getFocus = (date) => request(date ? `/focus?date=${date}` : '/focus');
 export const createFocus = (body) => request('/focus', { method: 'POST', body: JSON.stringify(body) });
 export const deleteFocus = (id) => request(`/focus/${id}`, { method: 'DELETE' });
