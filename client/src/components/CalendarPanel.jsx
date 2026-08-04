@@ -28,6 +28,11 @@ export default function CalendarPanel() {
     setCalMonth(new Date(calMonth.getFullYear(), calMonth.getMonth() + n, 1));
   };
 
+  const remove = async (id) => {
+    await api.deleteEvent(id);
+    load();
+  };
+
   const openModal = (date) => {
     setPrefillDate(date);
     setModalOpen(true);
