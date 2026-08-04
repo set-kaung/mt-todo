@@ -3,8 +3,6 @@ import { usePlanner } from '../context/PlannerContext.jsx';
 import * as api from '../api/client.js';
 import { toISODate, addDays, DAY_CODES } from '../utils/dates.js';
 
-const FIXED_BULLETS = 6;
-
 export default function WeekBulletBoard() {
   const { weekMonday } = usePlanner();
   const [data, setData] = useState({});
@@ -37,26 +35,29 @@ export default function WeekBulletBoard() {
               <span>{code.toUpperCase()}</span>
               <span className="dnum">{d.getDate()}</span>
             </div>
-            {Array.from({ length: FIXED_BULLETS }).map((_, idx) => {
-              const item = info.items[idx] || { text: '', done: false };
-              return (
-                <div className="bullet-row" key={idx}>
-                  <input type="checkbox" checked={item.done} onChange={() => toggle(info.date, idx)} />
-                  <input
-                    type="text"
-                    value={item.text}
-                    placeholder="..."
-                    className={item.done ? 'done' : ''}
-                    onChange={(e) => {
-                      const next = { ...data };
-                      next[code].items[idx].text = e.target.value;
-                      setData(next);
-                    }}
-                    onBlur={(e) => updateText(info.date, idx, e.target.value)}
-                  />
-                </div>
-              );
-            })}
+            {info.items.length === 0 && <div className="empty-note">No bullets.</div>}
+            {info.items.map((item) => (
+              <div className="bullet-row" key={item.index}>
+                <input type="checkbox" checked={item.done} onChange={() => toggle(info.date, item.index)} />
+                <input
+                  type="text"
+                  value={item.text}
+                  placeholder="..."
+                  className={item.done ? 'done' : ''}
+                  onChange={(e) => {
+                    const next = { ...data };
+                    next[code] = { ...next[code], items: next[code].items.map((i) => (i.index === item.index ? { ...i, text: e.target.value } : i)) };
+                    setData(next);
+                  }}
+                  onBlur={(e) => updateText(info.date, item.index, e.target.value)}
+                />
+              </div>
+            ))}
+            <button className="pill-btn" onClick={async () => {
+              const nextIndex = info.items.length ? Math.max(...info.items.map((i) => i.index)) + 1 : 0;
+              await api.updateWeeklyTask({ date: info.date, index: nextIndex, text: '' });
+              load();
+            }}>+</button>
           </div>
         );
       })}

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { prisma, ensureWeeklyTasks, weekDatesFromMonday, DAY_CODES } from './lib.js';
+import { prisma, weekDatesFromMonday, DAY_CODES } from './lib.js';
 
 const router = Router();
 
@@ -10,8 +10,11 @@ router.get('/', async (req, res) => {
   const out = {};
   for (let i = 0; i < 7; i++) {
     const date = dates[i];
-    const items = await ensureWeeklyTasks(user_id, date);
-    out[DAY_CODES[i]] = { date, items: items.map((x) => ({ text: x.text, done: x.done })) };
+    const items = await prisma.weeklyTask.findMany({
+      where: { user_id, date },
+      orderBy: { index: 'asc' },
+    });
+    out[DAY_CODES[i]] = { date, items: items.map((x) => ({ index: x.index, text: x.text, done: x.done })) };
   }
   res.json(out);
 });
@@ -19,10 +22,10 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
   const user_id = req.userId;
   const { date, index, text } = req.body;
-  await ensureWeeklyTasks(user_id, date);
-  await prisma.weeklyTask.updateMany({
-    where: { user_id, date, index: Number(index) },
-    data: { text },
+  await prisma.weeklyTask.upsert({
+    where: { user_id_date_index: { user_id, date, index: Number(index) } },
+    update: { text },
+    create: { user_id, date, index: Number(index), text, done: false },
   });
   res.json({ ok: true });
 });
@@ -30,11 +33,13 @@ router.post('/', async (req, res) => {
 router.post('/toggle', async (req, res) => {
   const user_id = req.userId;
   const { date, index } = req.body;
-  await ensureWeeklyTasks(user_id, date);
-  const items = await prisma.weeklyTask.findMany({ where: { user_id, date, index: Number(index) } });
-  const item = items[0];
+  const item = await prisma.weeklyTask.findUnique({
+    where: { user_id_date_index: { user_id, date, index: Number(index) } },
+  });
   if (item) {
     await prisma.weeklyTask.update({ where: { id: item.id }, data: { done: !item.done } });
+  } else {
+    await prisma.weeklyTask.create({ data: { user_id, date, index: Number(index), text: '', done: true } });
   }
   res.json({ ok: true });
 });

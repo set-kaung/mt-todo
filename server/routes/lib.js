@@ -2,35 +2,6 @@ import { PrismaClient } from '@prisma/client';
 
 export const prisma = new PrismaClient();
 
-export const FIXED_BULLETS = 6;
-export const FIXED_TODOS = 8;
-
-export async function ensureWeeklyTasks(user_id, date, n = FIXED_BULLETS) {
-  const existing = await prisma.weeklyTask.findMany({ where: { user_id, date }, orderBy: { index: 'asc' } });
-  if (existing.length >= n) return existing;
-  const toCreate = [];
-  for (let i = 0; i < n; i++) {
-    if (!existing.find((x) => x.index === i)) toCreate.push({ user_id, date, index: i });
-  }
-  if (toCreate.length) {
-    await prisma.weeklyTask.createMany({ data: toCreate });
-  }
-  return prisma.weeklyTask.findMany({ where: { user_id, date }, orderBy: { index: 'asc' } });
-}
-
-export async function ensureTodos(user_id, date, n = FIXED_TODOS) {
-  const existing = await prisma.todoItem.findMany({ where: { user_id, date }, orderBy: { index: 'asc' } });
-  if (existing.length >= n) return existing;
-  const toCreate = [];
-  for (let i = 0; i < n; i++) {
-    if (!existing.find((x) => x.index === i)) toCreate.push({ user_id, date, index: i });
-  }
-  if (toCreate.length) {
-    await prisma.todoItem.createMany({ data: toCreate });
-  }
-  return prisma.todoItem.findMany({ where: { user_id, date }, orderBy: { index: 'asc' } });
-}
-
 export function weekDatesFromMonday(mondayStr) {
   const start = new Date(mondayStr + 'T00:00:00');
   const out = [];
