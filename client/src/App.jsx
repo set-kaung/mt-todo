@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getToken, clearToken } from './api/client.js';
+import { PlannerProvider } from './context/PlannerContext.jsx';
 import Header from './components/Header.jsx';
 import LoginPage from './components/LoginPage.jsx';
 import SchedulePanel from './components/SchedulePanel.jsx';
@@ -41,37 +42,39 @@ export default function App() {
   }
 
   return (
-    <div className="app">
-      <Header onLogout={handleLogout} />
-      <section className="row row1">
-        <SchedulePanel />
-        <CalendarPanel />
-        <GoalsPanel />
-      </section>
-      <section className="row row2">
-        <div className="panel habit-panel">
-          <HabitTracker />
-          <MiniCalendar />
-        </div>
-        <WeeklyTimetable />
-        <div className="panel addtimetable-panel">
-          <AddTimetableForm />
-          <WeeklyFocusKPI />
-        </div>
-      </section>
-      <WeekBulletBoard />
-      <section className="row row4">
-        <DailyTimetable />
-        <div className="panel pomodoro-panel">
-          <PomodoroTimer />
-          <Resources />
-        </div>
-        <div className="panel side-panel">
-          <Vinyl />
-          <TodoList />
-          <DailyFocusKPI />
-        </div>
-      </section>
-    </div>
+    <PlannerProvider>
+      <div className="app">
+        <Header onLogout={handleLogout} />
+        <section className="row row1">
+          <SchedulePanel />
+          <CalendarPanel />
+          <GoalsPanel />
+        </section>
+        <section className="row row2">
+          <div className="panel habit-panel">
+            <HabitTracker />
+            <MiniCalendar />
+          </div>
+          <WeeklyTimetable />
+          <div className="panel addtimetable-panel">
+            <AddTimetableForm />
+            <WeeklyFocusKPI />
+          </div>
+        </section>
+        <WeekBulletBoard />
+        <section className="row row4">
+          <DailyTimetable />
+          <div className="panel pomodoro-panel">
+            <PomodoroTimer />
+            <Resources />
+          </div>
+          <div className="panel side-panel">
+            <Vinyl />
+            <TodoList />
+            <DailyFocusKPI />
+          </div>
+        </section>
+      </div>
+    </PlannerProvider>
   );
 }
