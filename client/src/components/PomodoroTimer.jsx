@@ -15,6 +15,13 @@ export default function PomodoroTimer() {
   const startedAt = useRef(null);
   const intervalRef = useRef(null);
   const totalRef = useRef(25 * 60);
+  const dingRef = useRef(null);
+
+  const playDing = () => {
+    const audio = dingRef.current ??= new Audio('/ding.mp3');
+    audio.currentTime = 0;
+    audio.play().catch(() => {});
+  };
 
   const reset = (nextMode = mode, nextMinutes = minutes) => {
     const total = nextMinutes * 60;
@@ -50,6 +57,7 @@ export default function PomodoroTimer() {
       intervalRef.current = setInterval(() => {
         setRemaining((r) => {
           if (r <= 1) {
+            playDing();
             saveSession(totalRef.current, 0);
             return 0;
           }
