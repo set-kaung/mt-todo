@@ -33,7 +33,7 @@ export default function SchedulePanel() {
             <div className="schedule-item" key={ev.id}>
               <div className="bar" style={{ background: ev.color }} />
               <div className="body">
-                <div className="time">{ev.time || ''} {ev.date.slice(5)}</div>
+                <div className="time" style={past ? { textDecoration: 'line-through', opacity: 0.5 } : undefined}>{ev.date.slice(8)}-{ev.date.slice(5, 7)} {ev.time || ''}</div>
                 <div className="name" style={past ? { textDecoration: 'line-through', opacity: 0.5 } : undefined}>{ev.name}</div>
               </div>
               <button className="del" onClick={() => remove(ev.id)}>✕</button>
