@@ -19,7 +19,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3000;
-const APP_VERSION = "0.1.1";
+const APP_VERSION = "0.1.2";
 
 app.use(cors());
 app.use(express.json());
