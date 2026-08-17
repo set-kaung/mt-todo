@@ -1,21 +1,11 @@
 import { usePlanner } from '../context/PlannerContext.jsx';
 import { fmtHr } from '../utils/dates.js';
-import MonthHeatmap from './MonthHeatmap.jsx';
+import { buildYearGrid, groupWeeksByMonth } from '../utils/heatmapDates.js';
+import MonthHeatmap, { MONTH_ABBRS } from './MonthHeatmap.jsx';
 import styles from './FocusHeatmap.module.css';
 
 const PALETTE = ['#ececec', '#fde6f0', '#f9b9d7', '#f599c6', '#e06a9f'];
-
-const CELL = 15;
-const GAP = 4;
-const DAY_LABELS_W = 24;
-const BODY_GAP = 3;
-
-const ROOT_VARS = {
-  '--cell': `${CELL}px`,
-  '--gap': `${GAP}px`,
-  '--day-labels-w': `${DAY_LABELS_W}px`,
-  '--body-gap': `${BODY_GAP}px`,
-};
+const DAY_LABELS = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
 
 export default function FocusHeatmap() {
   const { allFocus, calMonth } = usePlanner();
@@ -28,31 +18,48 @@ export default function FocusHeatmap() {
     });
 
   const year = calMonth.getFullYear();
+  const yearWeeks = buildYearGrid(year);
+  const monthGroups = groupWeeksByMonth(yearWeeks, year);
+  const totalWeeks = yearWeeks.length;
+
   const yearMinutes = Object.entries(minutesByDate)
     .filter(([d]) => d.startsWith(`${year}-`))
     .reduce((a, [, m]) => a + m, 0);
 
-  const dayLabels = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
-
   return (
-    <div className={`panel ${styles.panel}`} style={ROOT_VARS}>
+    <div className={`panel ${styles.panel}`}>
       <div className={styles.header}>
         <h3>Focus Activity — {year}</h3>
         <span className="muted small">{fmtHr(yearMinutes)} total</span>
       </div>
-      <div className={styles.scroll}>
-        <div className={styles.monthsBody}>
-          <div className={styles.dayLabels}>
-            {dayLabels.map((d, i) => (
-              <span key={i} className={styles.dayLabel}>{d}</span>
+      <div className={styles.body}>
+        <div className={styles.labelsRow}>
+          <div className={styles.spacer} style={{ flexGrow: 1, flexBasis: 0 }} />
+          <div className={styles.labelsFlex} style={{ flexGrow: totalWeeks, flexBasis: 0 }}>
+            {monthGroups.map((weeks, m) => (
+              <div
+                key={m}
+                className={styles.monthLabel}
+                style={{ flexGrow: weeks.length, flexBasis: 0 }}
+              >
+                {MONTH_ABBRS[m]}
+              </div>
             ))}
           </div>
-          <div className={styles.months}>
-            {Array.from({ length: 12 }, (_, m) => (
+        </div>
+        <div className={styles.weeksRow}>
+          <div className={styles.dayLabelsCol} style={{ flexGrow: 1, flexBasis: 0 }}>
+            {DAY_LABELS.map((d, i) => (
+              <span key={i} className={styles.dayLabelCell}>{d}</span>
+            ))}
+          </div>
+          <div className={styles.monthsFlex} style={{ flexGrow: totalWeeks, flexBasis: 0 }}>
+            {monthGroups.map((weeks, m) => (
               <MonthHeatmap
                 key={m}
                 year={year}
                 month={m}
+                weeks={weeks}
                 minutesByDate={minutesByDate}
                 palette={PALETTE}
               />

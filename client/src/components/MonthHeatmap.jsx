@@ -1,15 +1,7 @@
-import {
-  startOfMonth,
-  endOfMonth,
-  startOfWeek,
-  endOfWeek,
-  eachWeekOfInterval,
-  addDays,
-} from 'date-fns';
 import { fmtDate } from '../utils/heatmapDates.js';
 import styles from './MonthHeatmap.module.css';
 
-const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const MONTH_ABBRS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 function levelFor(minutes) {
   if (minutes <= 0) return 0;
@@ -19,23 +11,9 @@ function levelFor(minutes) {
   return 4;
 }
 
-export default function MonthHeatmap({ year, month, minutesByDate, palette }) {
-  const start = startOfMonth(new Date(year, month, 1));
-  const end = endOfMonth(start);
-  const gridStart = startOfWeek(start, { weekStartsOn: 0 });
-  const gridEnd = endOfWeek(end, { weekStartsOn: 0 });
-
-  const weekStarts = eachWeekOfInterval(
-    { start: gridStart, end: gridEnd },
-    { weekStartsOn: 0 }
-  );
-  const weeks = weekStarts.map((sunday) =>
-    Array.from({ length: 7 }, (_, i) => addDays(sunday, i))
-  );
-
+export default function MonthHeatmap({ year, month, weeks, minutesByDate, palette }) {
   return (
-    <div className={styles.month}>
-      <div className={styles.title}>{MONTH_NAMES[month]}</div>
+    <div className={styles.month} style={{ flexGrow: weeks.length, flexBasis: 0 }}>
       <div className={styles.weeks}>
         {weeks.map((week, w) => (
           <div className={styles.week} key={w}>
@@ -59,3 +37,5 @@ export default function MonthHeatmap({ year, month, minutesByDate, palette }) {
     </div>
   );
 }
+
+export { MONTH_ABBRS };

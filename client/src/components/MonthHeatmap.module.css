@@ -1,11 +1,26 @@
-.month { display: flex; flex-direction: column; gap: 6px; }
-.title { font-size: 10px; font-weight: 600; color: var(--muted); text-align: center; }
-.weeks { display: flex; gap: var(--gap); }
-.week { display: flex; flex-direction: column; gap: var(--gap); }
-.cell {
-  width: var(--cell);
-  height: var(--cell);
-  border-radius: 3px;
-  background: var(--line);
+.month {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
 }
-.out { background: transparent; }
+.weeks {
+  display: flex;
+  gap: var(--cell-gap);
+  flex: 1;
+}
+.week {
+  display: flex;
+  flex-direction: column;
+  gap: var(--cell-gap);
+  flex: 1 1 0;
+  min-width: 0;
+}
+.cell {
+  aspect-ratio: 1 / 1;
+  border-radius: 0.1rem;
+  background: var(--line);
+  max-width: 1rem;
+}
+.out {
+  background: transparent;
+}

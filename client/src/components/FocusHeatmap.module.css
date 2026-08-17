@@ -1,30 +1,92 @@
-.panel { padding: 16px 18px; }
-.header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 14px; }
-.header h3 { margin: 0; }
-.scroll { overflow-x: auto; padding-bottom: 4px; }
-.monthsBody {
+.panel {
+  padding: 1.5rem 2.5rem 1.5rem 2.5rem !important;
+  --cell-gap: 0.12rem;
+  --month-gap: 1.5rem;
+  --body-gap: 0.5rem;
+}
+.header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+.header h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  width: 100%;
+}
+
+.labelsRow {
   display: flex;
   gap: var(--body-gap);
-  min-width: max-content;
 }
-.dayLabels {
-  display: flex; flex-direction: column;
-  gap: var(--gap);
-  width: var(--day-labels-w);
-  flex-shrink: 0;
-  padding-top: 20px;
+.weeksRow {
+  display: flex;
+  gap: var(--body-gap);
+  align-items: stretch;
 }
-.dayLabel {
-  height: var(--cell);
-  line-height: var(--cell);
-  font-size: 9px; color: var(--muted);
+
+.spacer {
+  min-width: 0;
 }
-.months { display: flex; gap: 10px; }
+
+.dayLabelsCol {
+  display: flex;
+  flex-direction: column;
+  gap: var(--cell-gap);
+  min-width: 0;
+}
+.dayLabelCell {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.5rem;
+  color: var(--muted);
+  line-height: 1;
+  overflow: hidden;
+}
+
+.labelsFlex {
+  display: flex;
+  gap: var(--month-gap);
+  min-width: 0;
+}
+.monthsFlex {
+  display: flex;
+  gap: var(--month-gap);
+  min-width: 0;
+}
+
+.monthLabel {
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: var(--muted);
+  overflow: hidden;
+  white-space: nowrap;
+  min-width: 0;
+}
+
 .cell {
-  width: var(--cell);
-  height: var(--cell);
-  border-radius: 3px;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 0.15rem;
   background: var(--line);
 }
-.legendSize { width: 11px; height: 11px; }
-.legendBar { display: flex; align-items: center; gap: 4px; margin-top: 12px; justify-content: flex-end; }
+.legendSize {
+  width: 0.6rem;
+  height: 0.6rem;
+}
+.legendBar {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-top: 0.75rem;
+  justify-content: flex-end;
+}

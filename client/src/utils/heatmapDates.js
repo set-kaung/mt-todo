@@ -28,20 +28,15 @@ export function buildYearGrid(year) {
   );
 }
 
-export function getMonthLabels(weeks, year) {
-  const labels = [];
+export function groupWeeksByMonth(weeks, year) {
   const yearAnchor = new Date(year, 0, 1);
-
-  for (let month = 0; month < 12; month++) {
-    const firstWeekIndex = weeks.findIndex((week) =>
-      week.some((d) => isSameYear(d, yearAnchor) && getMonth(d) === month)
-    );
-    if (firstWeekIndex !== -1) {
-      labels.push({ weekIndex: firstWeekIndex, label: MONTH_ABBRS[month] });
-    }
-  }
-
-  return labels;
+  const groups = Array.from({ length: 12 }, () => []);
+  weeks.forEach((week) => {
+    const inYearDay = week.find((d) => isSameYear(d, yearAnchor));
+    if (!inYearDay) return;
+    groups[getMonth(inYearDay)].push(week);
+  });
+  return groups;
 }
 
 export function fmtDate(date) {
