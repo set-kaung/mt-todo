@@ -17,6 +17,7 @@ import Resources from './components/Resources.jsx';
 import Vinyl from './components/Vinyl.jsx';
 import TodoList from './components/TodoList.jsx';
 import DailyFocusKPI, { WeeklyFocusKPI } from './components/DailyFocusKPI.jsx';
+import FocusHeatmap from './components/FocusHeatmap.jsx';
 
 export default function App() {
   const [loggedIn, setLoggedIn] = useState(() => Boolean(getToken()));
@@ -45,6 +46,9 @@ export default function App() {
     <PlannerProvider>
       <div className="app">
         <Header onLogout={handleLogout} />
+        <section className="row row-heatmap">
+          <FocusHeatmap />
+        </section>
         <section className="row row1">
           <SchedulePanel />
           <CalendarPanel />

@@ -1,0 +1,30 @@
+.panel { padding: 16px 18px; }
+.header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 14px; }
+.header h3 { margin: 0; }
+.scroll { overflow-x: auto; padding-bottom: 4px; }
+.monthsBody {
+  display: flex;
+  gap: var(--body-gap);
+  min-width: max-content;
+}
+.dayLabels {
+  display: flex; flex-direction: column;
+  gap: var(--gap);
+  width: var(--day-labels-w);
+  flex-shrink: 0;
+  padding-top: 20px;
+}
+.dayLabel {
+  height: var(--cell);
+  line-height: var(--cell);
+  font-size: 9px; color: var(--muted);
+}
+.months { display: flex; gap: 10px; }
+.cell {
+  width: var(--cell);
+  height: var(--cell);
+  border-radius: 3px;
+  background: var(--line);
+}
+.legendSize { width: 11px; height: 11px; }
+.legendBar { display: flex; align-items: center; gap: 4px; margin-top: 12px; justify-content: flex-end; }

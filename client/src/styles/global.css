@@ -401,3 +401,7 @@ input, select { font-family: inherit; font-size: 13px; }
   .row1, .row2, .row4 { grid-template-columns: 1fr; }
   .row3 { grid-template-columns: repeat(2, 1fr); }
 }
+
+/* ---------- Focus Heatmap row layout ---------- */
+.row-heatmap { grid-template-columns: 1fr; }
+.row-heatmap > * { grid-column: span 1; min-width: 0; }

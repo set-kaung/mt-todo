@@ -1,0 +1,11 @@
+.month { display: flex; flex-direction: column; gap: 6px; }
+.title { font-size: 10px; font-weight: 600; color: var(--muted); text-align: center; }
+.weeks { display: flex; gap: var(--gap); }
+.week { display: flex; flex-direction: column; gap: var(--gap); }
+.cell {
+  width: var(--cell);
+  height: var(--cell);
+  border-radius: 3px;
+  background: var(--line);
+}
+.out { background: transparent; }
