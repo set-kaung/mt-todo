@@ -16,8 +16,8 @@ export default function SchedulePanel() {
 
   const now = new Date();
   const sorted = [...events].sort((a, b) => {
-    const pa = eventDateTime(a) <= now;
-    const pb = eventDateTime(b) <= now;
+    const pa = eventDateTime(a) < now;
+    const pb = eventDateTime(b) < now;
     if (pa !== pb) return pa ? 1 : -1;
     return eventDateTime(a) - eventDateTime(b);
   });
@@ -28,7 +28,7 @@ export default function SchedulePanel() {
       <div className="scroll-list">
         {events.length === 0 && <div className="empty-note">No events this month.</div>}
         {sorted.map((ev) => {
-          const past = eventDateTime(ev) <= now;
+          const past = eventDateTime(ev) < now;
           return (
             <div className="schedule-item" key={ev.id}>
               <div className="bar" style={{ background: ev.color }} />
